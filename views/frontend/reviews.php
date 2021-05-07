@@ -236,7 +236,7 @@
                 </div>
                     <div class="form-group col-md-12 mt-2 mb-2">
                         <textarea class="form-control mt-2 mb-2" name="text" id="text" rows="3" placeholder="Review"></textarea>
-                        <button type="submit">Ajouter</button>
+                        <button class="btn btn-danger"type="submit">Ajouter</button>
                     </div>
             </form>
           </div>

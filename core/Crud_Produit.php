@@ -46,26 +46,15 @@ public static function selectOne($id){
         echo 'Erreur: '.$e->getMessage();
     }
 }
-        public static function archive($Produit)
+        public static function archive($Produit,$id)
         {
         $db = config::getConnexion(); //appel fonction static sans new
-        $sql = "INSERT INTO `produit_archive`(`ID`, `titre`, `caption` , `categorie` , `id_artist`, `prix` ,`artist`) 
-        VALUES (:ID,:titre,:caption,:categorie,:id_artist,:prix;:artist)";
+        $sql = "INSERT INTO `produit_archive` (`ID`, `titre`, `description` , `categorie` , `id_artist`, `prix` ,`artist`) 
+        SELECT `titre`, `description` , `categorie` , `id_artist`, `prix` ,`artist` FROM `produit` WHERE id = ".$id;        
         $req=$db->prepare($sql);
 
        
-        $req->bindValue(":ID", $Produit->getID());
-        $req->bindValue(":titre", $Produit->getTitre());
-        $req->bindValue(":description", $Produit->getDescription());
-        $req->bindValue(":categorie", $Produit->getCategorie());
-        $req->bindValue(":id_artist", $Produit->getId_Artist());
-        $req->bindValue(":prix", $Produit->getPrix());
-        $req->bindValue(":artist", $Produit->getArtist());
 
-        $req->execute();
-        $sql="DELETE FROM produit where ID=:ID ";
-        $req=$db->prepare($sql);
-        $req->bindValue(':ID',$ID);
     }
 
     public static function update($produit)

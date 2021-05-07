@@ -231,12 +231,7 @@
 													<li><img src="images/icon9.png" alt=""><span>Categorie: <?php echo $row['categorie']; ?></span></li>
 												</ul>
 												<ul class="bk-links">
-													<li><a href="#" title=""><i class="la la-cart-plus"></i></a></li>
-													<li><a href="javascript:void(0);" id="dellink<?php echo $row['id']; ?>"  id="dellink<?php echo $row['id']; ?>"> <i   class="la la-close" style="background-color:#e44d3a;"onclick="delconfirm('<?php echo $row['id']; ?>','')"></i>
-       
-                         						 
-													</a></li>
-													
+													<li><a href="#" title=""><i class="la la-cart-plus"></i></a></li>													
 													<li><a href="#" title=""><i class="la la-envelope" style="background-color:rgb(95, 95, 223);" ></i></a></li>
 												</ul>
 											</div>

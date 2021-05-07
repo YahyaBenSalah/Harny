@@ -117,9 +117,9 @@
                           </a>
                           </td>
                           <td>
-                            <a href="product_archive_script.php?id=<?php echo $row['id']; ?>" class="btn btn-info btn-icon-split">
+                            <a href="product_archive_script.php?id=<?php echo $row['id']; ?>" class="btn btn-warning btn-icon-split">
                               <span class="icon text-white-50">
-                                <i class="fas fa-fw fa-wrench"></i>
+                                <i class="fas fa-fw fa-archive"></i>
                               </span>
                               <span class="text">Archiver</span>
                             </a>

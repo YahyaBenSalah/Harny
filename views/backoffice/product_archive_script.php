@@ -1,17 +1,10 @@
 <?php
     include '../../core/Crud_Produit.php';
 
-$produit = new Produit(
-    -1,
-    $_POST['titre'],
-    $_POST['description'],
-    $_POST['categorie'], 
-    $_POST['id_artist'],
-    $_POST['prix'],
-    $_POST['image'],
-    $_POST['artist']
-);
+$id = $_GET['id'];
+$produit = Crud_Produit::selectOne($id);
 
-Crud_Produit::insert($produit);
+Crud_Produit::archive($produit,$id);
+Crud_Produit::delete($id);
 
 header("Location: http://localhost/artisons/views/backoffice/product_list.php");
