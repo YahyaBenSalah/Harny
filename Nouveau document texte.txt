@@ -1,0 +1,281 @@
+{% extends 'frontoffice/front/index.html.twig' %}
+
+{% block title %}Post{% endblock %}
+
+{% block page_title %}
+    Post
+{% endblock %}
+
+{% block body %}
+    <section class="forum-sec">
+        <div class="container">
+            <div class="forum-links">
+                <ul>
+                    <li class="active"><a href="#" title="">Latest</a></li>
+                    <li><a href="#" title="">Unanswered</a></li>
+                    <li><a href="#" title="">Treading</a></li>
+                    <li><a href="#" title="">Popular This Week</a></li>
+                    <li><a href="#" title="">Popular of Month</a></li>
+                </ul>
+            </div><!--forum-links end-->
+            <div class="forum-links-btn">
+                <a href="#" title=""><i class="fa fa-bars"></i></a>
+            </div>
+        </div>
+    </section>
+
+    <section class="forum-page">
+        <div class="container">
+            <div class="forum-questions-sec">
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="forum-post-view">
+                            <div class="usr-question">
+                                <div class="usr_img">
+                                    <img src="http://via.placeholder.com/60x60" alt="">
+                                </div>
+                                <div class="usr_quest">
+                                    <h3>{{ post.title }}</h3>
+                                    <p> {{ post.description |raw }}</p>
+                                    <ul class="react-links">
+                                        <li><a href="#" title=""><i class="fa fa-eye"></i>{{ post.views }}</a></li>
+                                        <li><a href="#" title=""><i class="fa fa-comment"></i> {{ post.NOC }} </a></li>
+                                        <li>
+                                            <span><i class="fa fa-clock-o"></i>{{ post.creatAt ? post.creatAt|date('Y-m-d H:i:s') : '' }}</span>
+                                        </li>
+                                    </ul>
+                                    {% if post.comments | length > 0 %}
+                                        <div>
+                                            {% include 'frontoffice/post/rating.html.twig' with {'rating': post.avgRating } %}
+                                        </div>
+                                    {% endif %}
+                                    <div class="comment-section">
+                                        <h3>{{ post.NOC }}</h3>
+                                        <div class="comment-sec">
+                                            <ul>
+                                                {% for comment in comments %}
+                                                    {% if comment.Post.id == post.id %}
+                                                        <li>
+                                                            <div class="comment-list">
+                                                                <div class="bg-img">
+                                                                    <img src="http://via.placeholder.com/40x40" alt="">
+                                                                </div>
+                                                                <div class="comment">
+                                                                    <div style="display: flex">
+                                                                        <h3>
+                                                                            {% if  comment.Recruiter %}
+                                                                                {{ comment.Recruiter }}
+                                                                            {% elseif comment.Candidate %}
+                                                                                {{ comment.Candidate }}
+                                                                            {% endif %}
+                                                                            <span><img src="{{ asset('images/clock.png') }}"
+                                                                                       alt=""> {{ comment.date ? comment.date|date('Y-m-d') : '' }}</span>
+                                                                        </h3>
+                                                                    </div>
+                                                                    <p>{{ comment.content|raw }}</p>
+                                                                    <div>
+                                                                        {% include 'frontoffice/post/rating.html.twig' with {'rating':comment.rating} %}
+                                                                    </div>
+                                                                </div>
+                                                                {% if is_granted('ROLE_CANDIDATE') and (app.user == comment.Candidate) or is_granted('ROLE_RECRUITER') and (app.user == comment.Recruiter) %}
+                                                                    <div style="width: 100%; display:flex; justify-content: flex-end">
+                                                                        <a href="#" data-toggle="modal"
+                                                                           data-target="#edit-comment-modal-{{ comment.id }}">
+                                                                            <button type="button"
+                                                                                    class="btn-sm shadow-sm btn btn-primary mt-2 mb-2 mr-2">
+                                                                                Edit
+                                                                            </button>
+                                                                        </a>
+                                                                        <!-- Modal edit comment -->
+                                                                        <div class="modal fade" id="edit-comment-modal-{{ comment.id }}"
+                                                                             tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                                                                             aria-hidden="true">
+                                                                            <div class="modal-dialog" role="document">
+                                                                                <div class="modal-content">
+                                                                                    <div class="modal-header">
+                                                                                        <h5 class="modal-title">
+                                                                                            Edit comment</h5>
+                                                                                        <button type="button" class="close" data-dismiss="modal"
+                                                                                                aria-label="Close">
+                                                                                            <span aria-hidden="true">&times;</span>
+                                                                                        </button>
+                                                                                    </div>
+                                                                                    <div class="modal-body">
+                                                                                        {{ render(controller(
+                                                                                            'App\\Controller\\CommentController::editFront',
+                                                                                            { 'id': comment.id }
+                                                                                        )) }}
+
+                                                                                        <!--{ include('frontoffice/forum/edit.html.twig', {'forum':forum}) }}-->
+                                                                                        <button type="button" class="btn btn-secondary"
+                                                                                                data-dismiss="modal">Close
+                                                                                        </button>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        {{ include('frontoffice/comment/_delete_form.html.twig') }}
+                                                                    </div>
+                                                                {% endif %}
+                                                            </div><!--comment-list end-->
+                                                        </li>
+                                                    {% endif %}
+                                                {% else %}
+                                                    <tr>
+                                                        <td colspan="5">no records found</td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </ul>
+                                        </div><!--comment-sec end-->
+                                    </div>
+                                </div><!--usr_quest end-->
+                            </div><!--usr-question end-->
+                        </div><!--forum-post-view end-->
+                        <div class="post-comment-box">
+                            <div class="user-poster">
+                                <div class="usr-post-img">
+                                    <img src="http://via.placeholder.com/40x40" alt="">
+                                    <ul>
+                                        {% if is_granted('ROLE_CANDIDATE') %}
+                                            {{ app.user.lastName }}  {{ app.user.firstName }}
+                                        {% elseif is_granted('ROLE_RECRUITER') %}
+                                            {{ app.user.name }}
+                                        {% endif %}
+                                    </ul>
+                                </div>
+                                <div class="post_comment_sec">
+                                    {{ render(controller(
+                                        'App\\Controller\\CommentController::newFront'
+                                    )) }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4" style="border-radius: 5px; position: sticky; right: 0;">
+                            <div class="widget widget-user" style="  border-radius: 5px;">
+                                <h3 class="title-wd" style="color: #eeeeee; font-size: 16px;background-color: #4e73df;">
+                                    Top new 5 post </h3>
+                                <ul>
+                                    {% for post in posts |sort|reverse|slice(0,5) %}
+                                        <li>
+                                            <div class="usr-msg-details">
+                                                <div class="usr-mg-info">
+                                                    <h3 style="color: #6a737c; font-size: 14px;">{{ post.title }}</h3>
+                                                </div>
+                                                <!--usr-mg-info end-->
+                                            </div>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            <button style=" width: 128px; font-family: Noto Sans,Arial,sans-serif; border-radius: 15px; text-align:center; margin-left: 35%; position: relative;"
+                                    class="btn d-none d-sm-inline-block btn-sm btn-primary shadow-sm mt-2 mb-2"
+                                    onclick="topFunction()" id="myBtn" title="Go to top">Back to Top
+                            </button>
+                        </div>
+                    </div><!--post_comment_sec end-->
+
+                </div><!--user-poster end-->
+
+            </div><!--post-comment-box end-->
+        </div>
+    </section><!--forum-page end-->
+
+
+    <!--  <div style="width: 100%; display:flex; justify-content: flex-end">
+          <a href="{ path('post_edit', {'id': post.id}) }}"><button type="button" class="btn-sm shadow-sm btn btn-primary mt-2 mb-2 mr-2"><i class="far fa-edit"></i> Edit</button></a>
+          { include('post/_delete_form.html.twig') }}
+      </div>-->
+
+    <script>
+        $("#comment_form").submit(function (e) {
+            console.log("her");
+            e.preventDefault(); // avoid to execute the actual submit of the form.
+            var form = $(this);
+            var url = form.attr('action');
+            $.ajax({
+                type: "POST",
+                url: url + "?post_id=" + {{ post.id }},
+                data: form.serialize(),
+                success: function (data) {
+
+                    window.location.reload();
+
+
+                }
+            });
+        });
+        var string = "{{ strTags }}";
+        var availableTags = string.split('/');
+        console.log(availableTags);
+
+        function split(val) {
+            return val.split(/@\s*/);
+        }
+
+        function extractLast(term) {
+            return split(term).pop();
+        }
+
+        $("#cke_comment_content_arialbl")
+            // don't navigate away from the field on tab when selecting an item
+            .bind("keydown", function (event) {
+                if (event.keyCode === $.ui.keyCode.TAB && $(this).data("autocomplete").menu.active) {
+                    event.preventDefault();
+                }
+            }).autocomplete({
+            minLength: 0,
+            source: function (request, response) {
+                var term = request.term,
+                    results = [];
+                if (term.indexOf("@") >= 0) {
+                    term = extractLast(request.term);
+                    if (term.length > 0) {
+                        results = $.ui.autocomplete.filter(
+                            availableTags, term);
+                    }
+                }
+                response(results);
+            },
+            focus: function () {
+                // prevent value inserted on focus
+                return false;
+            },
+            select: function (event, ui) {
+                var terms = split(this.value);
+                // remove the current input
+                terms.pop();
+                // add the selected item
+                terms.push(ui.item.value);
+                // add placeholder to get the comma-and-space at the end
+                terms.push("");
+                this.value = terms.join("");
+                return false;
+            }
+        });
+        /*
+         ======================================
+                   BACK TO TOP LINK
+       ======================================
+       */
+
+        // When the user scrolls down 20px from the top of the document, show the button
+        window.onscroll = function () {
+            scrollFunction()
+        };
+
+        function scrollFunction() {
+            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                document.getElementById("myBtn").style.display = "block";
+            } else {
+                document.getElementById("myBtn").style.display = "none";
+            }
+        }
+
+        // When the user clicks on the button, scroll to the top of the document
+        function topFunction() {
+            document.body.scrollTop = 0;
+            document.documentElement.scrollTop = 0;
+        }
+
+    </script>
+{% endblock %}
